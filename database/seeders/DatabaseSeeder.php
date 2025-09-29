@@ -19,8 +19,13 @@ class DatabaseSeeder extends Seeder
         // Criar usuário de teste
         $user = User::factory()->create([
             'name' => 'João Silva',
-            'email' => 'joao@example.com',
-            'password' => Hash::make('password'),
+            'email' => 'joao@email.com',
+            'password' => Hash::make('123456'),
+        ]);
+
+        // Executar seeder de produtos com imagens
+        $this->call([
+            ProductWithImagesSeeder::class,
         ]);
 
         // Criar categorias

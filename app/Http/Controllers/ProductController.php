@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Services\ProductServices;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct(public ProductServices $productServices){}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::where('user_id', auth()->id())
-                          ->orderBy('created_at', 'desc')
-                          ->paginate(10);
+        $products = $this->productServices->index();
         
         return view('app.products.index', compact('products'));
     }
@@ -30,27 +32,10 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
-        $data = [
-            'user_id' => auth()->id(),
-            'name' => $request->name,
-        ];
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('storage/products'), $imageName);
-            $data['image'] = 'storage/products/' . $imageName;
-        }
-
-        Product::create($data);
+        $data = $request->validated();
+        $this->productServices->store($data);
 
         return redirect()->route('products.index')
                         ->with('success', 'Produto cadastrado com sucesso!');
@@ -61,10 +46,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        // Verificar se o produto pertence ao usuário logado
-        if ($product->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
+        $product = $this->productServices->getById($product->id);
         
         return view('app.products.show', compact('product'));
     }
@@ -74,10 +56,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        // Verificar se o produto pertence ao usuário logado
-        if ($product->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
+        $product = $this->productServices->getById($product->id);
         
         return view('app.products.edit', compact('product'));
     }
@@ -85,36 +64,10 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
-        // Verificar se o produto pertence ao usuário logado
-        if ($product->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
-        $data = [
-            'name' => $request->name,
-        ];
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Deletar imagem antiga se existir
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
-            }
-            
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('storage/products'), $imageName);
-            $data['image'] = 'storage/products/' . $imageName;
-        }
-
-        $product->update($data);
+        $data = $request->validated();
+        $this->productServices->update($product->id, $data);
 
         return redirect()->route('products.index')
                         ->with('success', 'Produto atualizado com sucesso!');
@@ -125,17 +78,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Verificar se o produto pertence ao usuário logado
-        if ($product->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
-        
-        // Deletar imagem se existir
-        if ($product->image && file_exists(public_path($product->image))) {
-            unlink(public_path($product->image));
-        }
-        
-        $product->delete();
+        $this->productServices->delete($product->id);
 
         return redirect()->route('products.index')
                         ->with('success', 'Produto excluído com sucesso!');

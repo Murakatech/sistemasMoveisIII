@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShoppingListRequest;
 use App\Models\ShoppingList;
 use App\Models\Category;
+use App\Services\ShoppingListServices;
 use Illuminate\Http\Request;
 
 class ShoppingListController extends Controller
 {
+    public function __construct(public ShoppingListServices $shoppingListServices){}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $shoppingLists = ShoppingList::where('user_id', auth()->id())
-                                   ->with('category')
-                                   ->orderBy('created_at', 'desc')
-                                   ->get();
+        $shoppingLists = $this->shoppingListServices->index();
         
         return view('app.shopping-lists.index', compact('shoppingLists'));
     }
@@ -33,23 +34,13 @@ class ShoppingListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ShoppingListRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'color' => 'nullable|string|max:7'
-        ]);
-
-        ShoppingList::create([
-            'user_id' => auth()->id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'category_id' => $request->category_id,
-            'color' => $request->color ?? '#007bff',
-            'active' => true
-        ]);
+        $data = $request->validated();
+        $data['color'] = $data['color'] ?? '#007bff';
+        $data['active'] = true;
+        
+        $this->shoppingListServices->store($data);
 
         return redirect()->route('shopping-lists.index')
                         ->with('success', 'Lista de compras criada com sucesso!');
@@ -60,12 +51,7 @@ class ShoppingListController extends Controller
      */
     public function show(ShoppingList $shoppingList)
     {
-        // Verificar se a lista pertence ao usuário logado
-        if ($shoppingList->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
-        
-        $shoppingList->load(['category', 'products']);
+        $shoppingList = $this->shoppingListServices->getById($shoppingList->id);
         
         // Buscar produtos do usuário que não estão na lista
         $availableProducts = \App\Models\Product::where('user_id', auth()->id())
@@ -81,11 +67,7 @@ class ShoppingListController extends Controller
      */
     public function edit(ShoppingList $shoppingList)
     {
-        // Verificar se a lista pertence ao usuário logado
-        if ($shoppingList->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
-        
+        $shoppingList = $this->shoppingListServices->getById($shoppingList->id);
         $categories = Category::where('user_id', auth()->id())->get();
         
         return view('app.shopping-lists.edit', compact('shoppingList', 'categories'));
@@ -94,26 +76,12 @@ class ShoppingListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ShoppingList $shoppingList)
+    public function update(ShoppingListRequest $request, ShoppingList $shoppingList)
     {
-        // Verificar se a lista pertence ao usuário logado
-        if ($shoppingList->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
+        $data = $request->validated();
+        $data['color'] = $data['color'] ?? '#007bff';
         
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'color' => 'nullable|string|max:7'
-        ]);
-
-        $shoppingList->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'category_id' => $request->category_id,
-            'color' => $request->color ?? '#007bff'
-        ]);
+        $this->shoppingListServices->update($shoppingList->id, $data);
 
         return redirect()->route('shopping-lists.index')
                         ->with('success', 'Lista de compras atualizada com sucesso!');
@@ -124,12 +92,7 @@ class ShoppingListController extends Controller
      */
     public function destroy(ShoppingList $shoppingList)
     {
-        // Verificar se a lista pertence ao usuário logado
-        if ($shoppingList->user_id !== auth()->id()) {
-            abort(403, 'Acesso negado.');
-        }
-        
-        $shoppingList->delete();
+        $this->shoppingListServices->delete($shoppingList->id);
 
         return redirect()->route('shopping-lists.index')
                         ->with('success', 'Lista de compras excluída com sucesso!');

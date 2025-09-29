@@ -24,7 +24,8 @@ class ProductServices
         $data['user_id'] = Auth::id();
 
         if (isset($data['image']) && $data['image']->isValid()) {
-            $data['image'] = $data['image']->store('products', 'public');
+            $imagePath = $data['image']->store('products', 'public');
+            $data['image'] = 'storage/' . $imagePath;
         } else {
             unset($data['image']);
         }
@@ -51,9 +52,12 @@ class ProductServices
 
         if (isset($data['image']) && $data['image']->isValid()) {
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+                // Remove o prefixo 'storage/' antes de deletar
+                $oldImagePath = str_replace('storage/', '', $product->image);
+                Storage::disk('public')->delete($oldImagePath);
             }
-            $data['image'] = $data['image']->store('products', 'public');
+            $imagePath = $data['image']->store('products', 'public');
+            $data['image'] = 'storage/' . $imagePath;
         } else {
             unset($data['image']);
         }
@@ -67,7 +71,9 @@ class ProductServices
         $product = $this->getById($id);
 
         if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+            // Remove o prefixo 'storage/' antes de deletar
+            $imagePath = str_replace('storage/', '', $product->image);
+            Storage::disk('public')->delete($imagePath);
         }
 
         return $product->delete();
