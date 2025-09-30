@@ -16,7 +16,7 @@
                             </h2>
                             <p class="mb-0 opacity-75">Gerencie seus produtos de forma eficiente</p>
                         </div>
-                        <a href="{{ route('products.create') }}" class="btn btn-light btn-lg shadow-sm">
+                        <a href="{{ route('products.create') }}" class="btn btn-primary btn-lg shadow-sm">
                             <i class="fas fa-plus me-2"></i>Novo Produto
                         </a>
                     </div>
@@ -57,7 +57,7 @@
                             <div class="product-overlay">
                                 <div class="d-flex gap-2 justify-content-center">
                                     <a href="{{ route('products.show', $product->id) }}" 
-                                       class="btn btn-light btn-sm rounded-pill shadow-sm">
+                                       class="btn btn-info btn-sm rounded-pill shadow-sm">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('products.edit', $product->id) }}" 
@@ -127,8 +127,8 @@
         <!-- Pagination if needed -->
         @if($products->hasPages())
             <div class="row mt-5">
-                <div class="col-12 d-flex justify-content-center">
-                    {{ $products->links() }}
+                <div class="col-12">
+                    {{ $products->links('pagination.custom') }}
                 </div>
             </div>
         @endif

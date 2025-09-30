@@ -21,7 +21,7 @@
                             </p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('shopping-lists.edit', $shoppingList) }}" class="btn btn-light btn-lg shadow-sm">
+                            <a href="{{ route('shopping-lists.edit', $shoppingList) }}" class="btn btn-warning btn-lg shadow-sm">
                                 <i class="fas fa-edit me-2"></i>Editar
                             </a>
                             <a href="{{ route('shopping-lists.index') }}" class="btn btn-outline-light btn-lg">

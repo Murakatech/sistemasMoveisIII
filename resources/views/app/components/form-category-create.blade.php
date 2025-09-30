@@ -6,7 +6,7 @@
                 <div class="card-body py-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <a href="{{ route('categories.index') }}" class="btn btn-light btn-sm me-3 rounded-pill">
+                            <a href="{{ route('categories.index') }}" class="btn btn-secondary btn-sm me-3 rounded-pill">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                             <div>

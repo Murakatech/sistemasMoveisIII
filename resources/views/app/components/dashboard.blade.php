@@ -91,26 +91,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card text-center">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <div>
-                    <h3 class="mb-0 fw-bold text-info">{{ now()->diffInDays(auth()->user()->created_at) }}</h3>
-                    <p class="mb-0 text-light">Dias Ativo</p>
-                </div>
-                <div class="rounded-circle p-3" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
-                    <i class="fas fa-calendar text-white fa-2x"></i>
-                </div>
-            </div>
-            <div class="progress" style="height: 4px;">
-                <div class="progress-bar" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); width: 90%"></div>
-            </div>
-            <small class="text-muted mt-2 d-block">
-                <i class="fas fa-check text-success me-1"></i>
-                Usuário ativo
-            </small>
-        </div>
-    </div>
+
 </div>
 
 <!-- Ações Rápidas -->

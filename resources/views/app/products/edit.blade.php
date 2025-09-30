@@ -9,7 +9,7 @@
                 <div class="card-body py-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <a href="{{ route('products.show', $product) }}" class="btn btn-light btn-sm me-3 rounded-pill">
+                            <a href="{{ route('products.show', $product) }}" class="btn btn-secondary btn-sm me-3 rounded-pill">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                             <div>
@@ -116,7 +116,7 @@
                                             <div class="image-preview" style="display: none;">
                                                 <img id="preview-img" src="" alt="Preview" class="img-fluid rounded">
                                                 <div class="image-overlay">
-                                                    <button type="button" class="btn btn-light btn-sm" onclick="removeNewImage()">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeNewImage()">
                                                         <i class="fas fa-times"></i> Remover
                                                     </button>
                                                 </div>

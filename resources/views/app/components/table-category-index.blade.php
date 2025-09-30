@@ -6,7 +6,7 @@
                 <div class="card-body py-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <a href="{{ route('dashboard') }}" class="btn btn-light btn-sm me-3 rounded-pill">
+                            <a href="{{ route('dashboard') }}" class="btn btn-secondary btn-sm me-3 rounded-pill">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                             <div>
@@ -114,8 +114,8 @@
         <!-- Pagination if needed -->
         @if(method_exists($categories, 'links'))
             <div class="row mt-4">
-                <div class="col-12 d-flex justify-content-center">
-                    {{ $categories->links() }}
+                <div class="col-12">
+                    {{ $categories->links('pagination.custom') }}
                 </div>
             </div>
         @endif

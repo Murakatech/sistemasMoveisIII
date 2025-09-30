@@ -17,7 +17,7 @@
                             <p class="mb-0 opacity-75">Atualize as informações da sua lista</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('shopping-lists.show', $shoppingList) }}" class="btn btn-light btn-lg shadow-sm">
+                            <a href="{{ route('shopping-lists.show', $shoppingList) }}" class="btn btn-info btn-lg shadow-sm">
                                 <i class="fas fa-eye me-2"></i>Visualizar
                             </a>
                             <a href="{{ route('shopping-lists.index') }}" class="btn btn-outline-light btn-lg">

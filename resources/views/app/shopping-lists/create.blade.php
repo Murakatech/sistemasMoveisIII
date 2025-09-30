@@ -16,7 +16,7 @@
                             </h2>
                             <p class="mb-0 opacity-75">Crie uma nova lista para organizar suas compras</p>
                         </div>
-                        <a href="{{ route('shopping-lists.index') }}" class="btn btn-light btn-lg shadow-sm">
+                        <a href="{{ route('shopping-lists.index') }}" class="btn btn-secondary btn-lg shadow-sm">
                             <i class="fas fa-arrow-left me-2"></i>Voltar
                         </a>
                     </div>
